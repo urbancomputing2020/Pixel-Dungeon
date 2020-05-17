@@ -105,6 +105,8 @@ public class DirectorManager : MonoBehaviour
         }
         else
         {
+            int modifier = -1;
+
         }
     }
     private void Scaled() 
@@ -116,19 +118,48 @@ public class DirectorManager : MonoBehaviour
         else
         {
             Measurements m = StatisticsManager.StatisticsInstance.Measurements;
+            int modifier = 1;
 
             int monstercount = m.monsters;
             if (m.monsterKilled == 0)
-                monstercount++;
+                monstercount += modifier;
             if (m.lethality > 0.5)
-                monstercount++;
-            if (m.roomTime[currentState.room] < 10)
-                monstercount++;
+                monstercount += modifier;
+            if (m.roomTime[currentState.room] < 5)
+                monstercount += modifier;
             if (m.lethality < 0.5 && m.monsterhit > 0)
-                monstercount--;
+                monstercount += modifier - 2;
 
+            
             currentState.Monsters = new List<Tuple<int, int>>();
-            currentState.Monsters.Add(new Tuple<int, int>((int)MonsterTypes.Medium, monstercount));
+       
+            if (monstercount <= 10)
+            {
+                currentState.Monsters.Add(new Tuple<int, int>((int)MonsterTypes.Soft, monstercount));
+            }
+            else if (monstercount <= 15)
+            {
+                currentState.Monsters.Add(new Tuple<int, int>((int)MonsterTypes.Soft, monstercount/4));
+                currentState.Monsters.Add(new Tuple<int, int>((int)MonsterTypes.Medium, monstercount/4));
+            }
+            else if (monstercount <= 20)
+            {
+                currentState.Monsters.Add(new Tuple<int, int>((int)MonsterTypes.Medium, monstercount / 4));
+            }/*
+            else if (monstercount <= 25)
+            {
+                currentState.Monsters.Add(new Tuple<int, int>((int)MonsterTypes.Medium, monstercount / 6));
+                currentState.Monsters.Add(new Tuple<int, int>((int)MonsterTypes.Hard, monstercount / 6));
+            }
+            else if (monstercount <= 30)
+            {
+                currentState.Monsters.Add(new Tuple<int, int>((int)MonsterTypes.Hard, monstercount / 3));
+            }*/
+            else
+            {
+                currentState.Monsters.Add(new Tuple<int, int>((int)MonsterTypes.Medium, 6));
+            }
+
             /*
             float RSmean = 30 + 10 * monstercount;
             float RSstdDev = 10;
@@ -182,7 +213,7 @@ public class DirectorManager : MonoBehaviour
         }
         else
         {
-
+            int modifier = 2;
         }
     }
 }
